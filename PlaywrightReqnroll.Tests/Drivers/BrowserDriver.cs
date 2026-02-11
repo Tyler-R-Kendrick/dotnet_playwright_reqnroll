@@ -28,14 +28,27 @@ public class BrowserDriver : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         if (_page != null)
+        {
             await _page.CloseAsync();
+            _page = null;
+        }
         
         if (_context != null)
+        {
             await _context.CloseAsync();
+            _context = null;
+        }
         
         if (_browser != null)
+        {
             await _browser.CloseAsync();
+            _browser = null;
+        }
         
-        _playwright?.Dispose();
+        if (_playwright != null)
+        {
+            _playwright.Dispose();
+            _playwright = null;
+        }
     }
 }

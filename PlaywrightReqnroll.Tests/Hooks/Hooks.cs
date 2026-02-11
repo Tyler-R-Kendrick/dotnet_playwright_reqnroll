@@ -19,4 +19,11 @@ public class Hooks
         // Initialize the browser/page before each scenario
         await _browserDriver.GetPageAsync();
     }
+
+    [AfterScenario]
+    public async Task AfterScenario()
+    {
+        // Clean up browser resources after each scenario
+        await _browserDriver.DisposeAsync();
+    }
 }
