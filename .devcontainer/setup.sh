@@ -17,8 +17,8 @@ if compgen -G "*.sln" > /dev/null; then
     dotnet restore
 fi
 
-# Install agent-skills (placeholder for future configuration)
-echo "Setting up agent-skills..."
-# Agent-skills configuration will be handled via workspace settings
+# Install Playwright agent skills
+echo "Installing Playwright agent skills..."
+npx -y skills add @microsoft/agent-skill-playwright
 
 echo "Setup complete!"

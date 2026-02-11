@@ -4,10 +4,10 @@
       "command": "npx",
       "args": [
         "-y",
-        "@executeautomation/playwright-mcp-server"
+        "@playwright/mcp"
       ],
       "env": {
-        "PLAYWRIGHT_BROWSERS_PATH": "${workspaceFolder}/node_modules/.playwright"
+        "PLAYWRIGHT_HEADLESS": "true"
       }
     }
   }

@@ -58,6 +58,9 @@ Generated\ Files/
 TestResult.xml
 nunit-*.xml
 
+# Reqnroll/SpecFlow generated files
+*.feature.cs
+
 # Approval Tests result files
 *.received.*
 
