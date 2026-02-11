@@ -12,7 +12,7 @@ echo "Installing Microsoft.Playwright..."
 dotnet tool install --global Microsoft.Playwright.CLI || dotnet tool update --global Microsoft.Playwright.CLI
 
 # Restore .NET dependencies if solution exists
-if [ -f "*.sln" ]; then
+if compgen -G "*.sln" > /dev/null; then
     echo "Restoring .NET dependencies..."
     dotnet restore
 fi

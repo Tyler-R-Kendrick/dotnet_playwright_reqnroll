@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 
 namespace PlaywrightReqnroll.Tests.Drivers;
 
-public class BrowserDriver : IDisposable
+public class BrowserDriver : IAsyncDisposable
 {
     private IPlaywright? _playwright;
     private IBrowser? _browser;
@@ -25,11 +25,17 @@ public class BrowserDriver : IDisposable
         return _page;
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _page?.CloseAsync().GetAwaiter().GetResult();
-        _context?.CloseAsync().GetAwaiter().GetResult();
-        _browser?.CloseAsync().GetAwaiter().GetResult();
+        if (_page != null)
+            await _page.CloseAsync();
+        
+        if (_context != null)
+            await _context.CloseAsync();
+        
+        if (_browser != null)
+            await _browser.CloseAsync();
+        
         _playwright?.Dispose();
     }
 }
