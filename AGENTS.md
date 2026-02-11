@@ -13,32 +13,83 @@ The agent's role is to use Playwright to execute feature files and record those 
 ### 1. Understanding the Architecture
 
 The project consists of:
-- **Features Folder** (`PlaywrightReqnroll.Tests/Features/`): Contains `.feature` files written in Gherkin syntax
+- **Features Folder** (`Features/` at solution level): Contains `.feature` files written in Gherkin syntax
 - **Step Definitions** (`PlaywrightReqnroll.Tests/StepDefinitions/`): C# implementations of Gherkin steps using Playwright
-- **Drivers** (`PlaywrightReqnroll.Tests/Drivers/`): Browser driver abstraction using Playwright
-- **Hooks** (`PlaywrightReqnroll.Tests/Hooks/`): Setup and teardown logic for scenarios
+- **Drivers** (`PlaywrightReqnroll.Tests/Drivers/`): Browser driver abstraction using Playwright with screenshot support
+- **Hooks** (`PlaywrightReqnroll.Tests/Hooks/`): Setup and teardown logic for scenarios, including automatic screenshot capture
+- **Test Results** (`PlaywrightReqnroll.Tests/TestResults/`): Contains test results, coverage reports, and screenshots
 
-### 2. Agent Workflow
+### 2. Test Results and Diagnostics
+
+**IMPORTANT:** Before running new tests, always check the previous test run results:
+
+#### Check Test Results
+1. **Look at TRX file** in `PlaywrightReqnroll.Tests/TestResults/` for the latest test run
+2. **Review code coverage** in the coverage reports (Cobertura, JSON, LCOV formats available)
+3. **Examine screenshots** in `PlaywrightReqnroll.Tests/TestResults/Screenshots/` for visual debugging
+
+#### Running Tests
+Only run new tests when:
+- Explicitly asked to run tests
+- Previous test results don't exist
+- You've made code changes that need verification
+
+**To run tests with coverage:**
+```bash
+cd PlaywrightReqnroll.Tests
+dotnet test --settings test.runsettings --collect:"XPlat Code Coverage" --results-directory ./TestResults
+```
+
+**To view test results:**
+- TRX files: Located in `TestResults/` directory
+- Coverage: Look for `coverage.cobertura.xml` or `coverage.json`
+- Screenshots: Located in `TestResults/Screenshots/`
+
+### 3. Screenshot-Based Debugging
+
+The test framework automatically captures screenshots:
+- **After every step** for documentation and debugging
+- **On test failure** with a "failure" suffix
+
+#### Using Screenshots for Debugging
+1. **Visual Diff Analysis**: Compare screenshots from different test runs to identify UI changes
+2. **Step-by-Step Verification**: Review screenshots in sequence to understand test flow
+3. **Failure Investigation**: Check the failure screenshot to see the exact state when the test failed
+4. **Screenshot naming**: `{ScenarioName}_{StepText}_{Timestamp}.png` or `{ScenarioName}_failure_{Timestamp}.png`
+
+#### Screenshot Best Practices
+- Review screenshots in `TestResults/Screenshots/` before re-running tests
+- Use screenshots to verify visual regressions
+- Compare screenshots across test runs to identify unexpected changes
+- Screenshots are full-page captures for complete context
+
+### 4. Agent Workflow
 
 When asked to implement test automation:
 
-#### Step 1: Analyze Feature Requirements
+#### Step 1: Analyze Previous Results (DO THIS FIRST)
+- **Check** `TestResults/` for latest test run results
+- **Review** TRX files to understand what tests ran and their outcomes
+- **Examine** code coverage reports to see what code is being tested
+- **Look at** screenshots to understand current behavior
+
+#### Step 2: Analyze Feature Requirements
 - Read the feature file in `Features/` directory
 - Understand the scenario and acceptance criteria
 - Identify what browser actions need to be performed
 
-#### Step 2: Execute with Playwright
+#### Step 3: Execute with Playwright
 - Use the Playwright MCP server configured in `.vscode/mcp.json`
 - Manually interact with the web application to understand the flow
 - Record the Playwright commands needed (e.g., `page.goto()`, `page.click()`, `page.fill()`)
 
-#### Step 3: Generate Step Definitions
+#### Step 4: Generate Step Definitions
 - Create or update step definition files in `StepDefinitions/`
 - Use the `BrowserDriver` class to get the Playwright page instance
 - Implement each Gherkin step with corresponding Playwright actions
 - Add appropriate assertions using NUnit's `Assert.That()`
 
-#### Step 4: Follow Coding Patterns
+#### Step 5: Follow Coding Patterns
 
 **Example Step Definition:**
 ```csharp
@@ -65,19 +116,7 @@ public async Task ThenIShouldSee(string expectedText)
 }
 ```
 
-### 3. Running Tests
-
-Execute tests using:
-```bash
-dotnet test
-```
-
-Or for specific features:
-```bash
-dotnet test --filter "FullyQualifiedName~ExampleNavigation"
-```
-
-### 4. Best Practices
+### 5. Best Practices
 
 #### For Feature Files:
 - Use clear, business-readable language
@@ -98,7 +137,14 @@ dotnet test --filter "FullyQualifiedName~ExampleNavigation"
 - Avoid XPath when possible
 - Chain locators for specificity: `page.GetByRole(AriaRole.Button).Filter(new() { HasText = "Submit" })`
 
-### 5. Development Container
+#### For Test Investigation:
+- **ALWAYS check TestResults first** before running new tests
+- Use screenshots for visual debugging instead of adding console logs
+- Compare screenshots to identify visual regressions
+- Review code coverage to ensure adequate test coverage
+- Use TRX files to understand test execution patterns
+
+### 6. Development Container
 
 This project includes a dev container configuration:
 - **Playwright browsers** are pre-installed via the devcontainer feature
@@ -111,7 +157,7 @@ To use:
 2. When prompted, click "Reopen in Container"
 3. Wait for the container to build and setup script to complete
 
-### 6. MCP Integration
+### 7. MCP Integration
 
 The Playwright MCP server is configured in `.vscode/mcp.json` to provide:
 - Browser automation capabilities via natural language
@@ -124,7 +170,7 @@ Use the MCP server through your AI assistant to:
 - Debug failing tests with live browser inspection
 - Capture screenshots for visual verification
 
-### 7. Creating New Tests
+### 8. Creating New Tests
 
 To add a new test scenario:
 
@@ -149,17 +195,23 @@ To add a new test scenario:
 
 4. **Run and iterate**:
    ```bash
-   dotnet test
+   dotnet test --settings test.runsettings --collect:"XPlat Code Coverage"
    ```
 
-### 8. Debugging
+5. **Review results**:
+   - Check TRX files for test outcomes
+   - Review code coverage reports
+   - Examine screenshots for visual verification
 
-- Use `Headless = false` in `BrowserDriver.cs` to see browser
-- Add `await page.PauseAsync()` to pause execution
-- Use `await page.ScreenshotAsync()` to capture state
-- Enable trace: `await context.Tracing.StartAsync()`
+### 9. Debugging
 
-### 9. Common Playwright Patterns
+- **Review screenshots first** in `TestResults/Screenshots/`
+- Use `Headless = false` in `BrowserDriver.cs` to see browser (for interactive debugging only)
+- Compare screenshots from failed vs. successful runs
+- Check code coverage to identify untested code paths
+- Review TRX files for detailed test execution information
+
+### 10. Common Playwright Patterns
 
 **Navigation:**
 ```csharp
@@ -188,9 +240,13 @@ await page.WaitForURLAsync("**/dashboard");
 ## Summary
 
 As an agent, your goal is to:
-1. **Understand** the business requirements from feature files
-2. **Execute** manual browser interactions using Playwright
-3. **Record** those interactions as reusable step definitions
-4. **Verify** the automation works correctly through test execution
+1. **Check previous test results** in TestResults/ directory before running new tests
+2. **Review screenshots** for visual debugging and regression detection
+3. **Analyze coverage reports** to ensure adequate test coverage
+4. **Understand** the business requirements from feature files
+5. **Execute** manual browser interactions using Playwright
+6. **Record** those interactions as reusable step definitions
+7. **Verify** the automation works correctly through test execution
+8. **Use screenshots and test results** for debugging instead of watching console output
 
-This creates a living documentation system where feature files describe behavior and step definitions provide executable validation.
+This creates a living documentation system where feature files describe behavior, step definitions provide executable validation, and test results/screenshots provide debugging insights.
