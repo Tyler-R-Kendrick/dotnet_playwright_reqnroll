@@ -5,7 +5,7 @@ echo "Running post-create setup script..."
 
 # Install Playwright browsers
 echo "Installing Playwright browsers..."
-npx playwright install --with-deps
+npx playwright install
 
 # Install .NET Playwright
 echo "Installing Microsoft.Playwright..."

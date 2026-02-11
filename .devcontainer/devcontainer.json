@@ -9,7 +9,7 @@
       "version": "20"
     },
     "ghcr.io/devcontainers-contrib/features/playwright:1": {
-      "version": "latest"
+      "version": "1.49"
     }
   },
   "postCreateCommand": ".devcontainer/setup.sh",
