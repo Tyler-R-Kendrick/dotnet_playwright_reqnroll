@@ -23,7 +23,7 @@ public class Hooks
     {
         // Capture scenario information
         _testScenarioContext.ScenarioTitle = _reqnrollContext.ScenarioInfo.Title;
-        _testScenarioContext.FeatureName = _reqnrollContext.ScenarioInfo.Title;
+        _testScenarioContext.FeatureName = _reqnrollContext.ScenarioContainer?.Resolve<Reqnroll.FeatureInfo>()?.Title ?? "Unknown";
         _testScenarioContext.HasError = false;
         
         // Initialize the browser/page before each scenario

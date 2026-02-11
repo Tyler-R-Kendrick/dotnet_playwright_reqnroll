@@ -52,7 +52,7 @@ public class BrowserDriver : IAsyncDisposable
         if (_page == null)
             return;
 
-        var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        var timestamp = DateTime.UtcNow.ToString("yyyyMMdd_HHmmss");
         var sanitizedScenario = SanitizeFileName(scenarioName);
         var sanitizedStep = string.IsNullOrEmpty(stepName) ? "" : $"_{SanitizeFileName(stepName)}";
         var fileName = $"{sanitizedScenario}{sanitizedStep}_{timestamp}.png";
