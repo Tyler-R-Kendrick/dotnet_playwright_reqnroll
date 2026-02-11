@@ -138,9 +138,11 @@ See [AGENTS.md](AGENTS.md) for detailed instructions on using AI agents to:
 
 Modify `PlaywrightReqnroll.Tests/Drivers/BrowserDriver.cs` to customize:
 - Browser type (Chromium, Firefox, WebKit)
-- Headless mode
+- Headless mode (defaults to `true` for CI/CD compatibility)
 - Viewport size
 - Device emulation
+
+**Note:** Both the BrowserDriver and MCP server are configured to run in headless mode by default for consistent behavior across development and CI environments.
 
 ### Reqnroll Settings
 
