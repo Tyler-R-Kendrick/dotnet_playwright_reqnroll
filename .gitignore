@@ -58,6 +58,17 @@ Generated\ Files/
 TestResult.xml
 nunit-*.xml
 
+# Test Results and Coverage
+TestResults/
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# Reqnroll/SpecFlow generated files
+*.feature.cs
+
 # Approval Tests result files
 *.received.*
 
