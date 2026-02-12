@@ -3,22 +3,12 @@ set -e
 
 echo "Running post-create setup script..."
 
-# Install Playwright browsers
-echo "Installing Playwright browsers..."
-npx playwright install
-
-# Install .NET Playwright
-echo "Installing Microsoft.Playwright..."
-dotnet tool install --global Microsoft.Playwright.CLI || dotnet tool update --global Microsoft.Playwright.CLI
-
 # Restore .NET dependencies if solution exists
-if compgen -G "*.sln" > /dev/null; then
-    echo "Restoring .NET dependencies..."
-    dotnet restore
-fi
+dotnet restore
 
 # Install Playwright agent skills
 echo "Installing Playwright agent skills..."
-npx -y skills add @microsoft/agent-skill-playwright
+npx -y -g skills add microsoft/playwright --skill playwright-api -a github-copilot -y
+npx -y -g skills add microsoft/playwright-cli --skill playwright-cli -a github-copilot -y
 
 echo "Setup complete!"
